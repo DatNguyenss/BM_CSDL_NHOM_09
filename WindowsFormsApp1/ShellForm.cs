@@ -14,6 +14,85 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
             _connectionString = connectionString;
+            SetupGrantUi();
+        }
+
+        private void SetupGrantUi()
+        {
+            cboObjectType.Items.Clear();
+            cboObjectType.Items.AddRange(new object[] { "Bảng (TABLE)", "Khung nhìn (VIEW)", "Thủ tục (PROCEDURE)", "Hàm (FUNCTION)" });
+            cboObjectType.SelectedIndex = 0;
+
+            PopulatePrivilegesForSelectedType();
+            UpdateColumnControlsState();
+        }
+
+        private string GetSelectedObjectType()
+        {
+            var s = cboObjectType.SelectedItem?.ToString() ?? "";
+            if (s.Contains("TABLE")) return "TABLE";
+            if (s.Contains("VIEW")) return "VIEW";
+            if (s.Contains("PROCEDURE")) return "PROCEDURE";
+            if (s.Contains("FUNCTION")) return "FUNCTION";
+            return "TABLE";
+        }
+
+        private void PopulatePrivilegesForSelectedType()
+        {
+            var type = GetSelectedObjectType();
+            cboPrivilege.Items.Clear();
+
+            if (radGrantRole.Checked)
+            {
+                cboPrivilege.Items.Add("CONNECT");
+                cboPrivilege.Items.Add("RESOURCE");
+                cboPrivilege.Items.Add("DBA");
+            }
+            else if (radGrantSysPriv.Checked)
+            {
+                cboPrivilege.Items.Add("CREATE SESSION");
+                cboPrivilege.Items.Add("CREATE USER");
+                cboPrivilege.Items.Add("ALTER USER");
+                cboPrivilege.Items.Add("DROP USER");
+                cboPrivilege.Items.Add("CREATE ROLE");
+                cboPrivilege.Items.Add("DROP ROLE");
+                cboPrivilege.Items.Add("GRANT ANY PRIVILEGE");
+                cboPrivilege.Items.Add("GRANT ANY ROLE");
+            }
+            else
+            {
+                // Object privileges by type
+                if (type == "TABLE" || type == "VIEW")
+                {
+                    cboPrivilege.Items.AddRange(new object[] { "SELECT", "INSERT", "UPDATE", "DELETE" });
+                }
+                else if (type == "PROCEDURE" || type == "FUNCTION")
+                {
+                    cboPrivilege.Items.Add("EXECUTE");
+                }
+                else
+                {
+                    cboPrivilege.Items.AddRange(new object[] { "SELECT", "INSERT", "UPDATE", "DELETE" });
+                }
+            }
+
+            if (cboPrivilege.Items.Count > 0)
+                cboPrivilege.SelectedIndex = 0;
+        }
+
+        private void UpdateColumnControlsState()
+        {
+            var type = GetSelectedObjectType();
+            var priv = (cboPrivilege.SelectedItem?.ToString() ?? "").Trim().ToUpperInvariant();
+
+            var allowColumn =
+                radGrantObjPriv.Checked &&
+                (type == "TABLE" || type == "VIEW") &&
+                (priv == "SELECT" || priv == "UPDATE");
+
+            btnPickColumns.Enabled = allowColumn;
+            txtColumns.ReadOnly = !allowColumn;
+            if (!allowColumn) txtColumns.Text = string.Empty;
         }
 
         private void mnuConnect_Click(object sender, EventArgs e)
@@ -142,7 +221,7 @@ namespace WindowsFormsApp1
         {
             try
             {
-                var obj = txtObject.Text.Trim(); // schema.object
+                var obj = cboObject.Text.Trim(); // schema.object
                 var parts = obj.Split('.');
                 if (parts.Length != 2) throw new InvalidOperationException("Object phải theo dạng SCHEMA.OBJECT");
 
@@ -162,20 +241,60 @@ namespace WindowsFormsApp1
             catch (Exception ex) { ShowOracleError(ex); }
         }
 
-        private void UpdateColumnButtonState()
+        private void cboPrivilege_SelectedIndexChanged(object sender, EventArgs e) => UpdateColumnControlsState();
+        private void cboObjectType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var priv = (txtPrivilege.Text ?? "").Trim().ToLowerInvariant();
-            btnPickColumns.Enabled = (priv == "select" || priv == "update");
+            PopulatePrivilegesForSelectedType();
+            UpdateColumnControlsState();
         }
 
-        private void txtPrivilege_TextChanged(object sender, EventArgs e) => UpdateColumnButtonState();
+        private void radGrant_CheckedChanged(object sender, EventArgs e)
+        {
+            PopulatePrivilegesForSelectedType();
+            UpdateColumnControlsState();
+        }
+
+        private async void btnLoadObjects_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var type = GetSelectedObjectType();
+                var filter = (txtObjectFilter.Text ?? "").Trim().ToUpperInvariant();
+                var like = string.IsNullOrWhiteSpace(filter) ? "" : $" and (owner||'.'||object_name) like {OracleSql.QLit("%" + filter + "%")}";
+
+                string sql;
+                if (type == "TABLE")
+                {
+                    sql = $"select owner||'.'||table_name as name from dba_tables where 1=1{like} order by owner, table_name";
+                }
+                else if (type == "VIEW")
+                {
+                    sql = $"select owner||'.'||view_name as name from dba_views where 1=1{like} order by owner, view_name";
+                }
+                else if (type == "PROCEDURE")
+                {
+                    sql = $"select owner||'.'||object_name as name from dba_objects where object_type='PROCEDURE'{like} order by owner, object_name";
+                }
+                else // FUNCTION
+                {
+                    sql = $"select owner||'.'||object_name as name from dba_objects where object_type='FUNCTION'{like} order by owner, object_name";
+                }
+
+                var dt = await OracleSql.QueryAsync(_connectionString, sql);
+                cboObject.DisplayMember = "name";
+                cboObject.ValueMember = "name";
+                cboObject.DataSource = dt;
+                if (dt.Rows.Count > 0) cboObject.SelectedIndex = 0;
+            }
+            catch (Exception ex) { ShowOracleError(ex); }
+        }
 
         private async void btnGrantExecute_Click(object sender, EventArgs e)
         {
             try
             {
                 var grantee = cboGrantee.SelectedValue?.ToString() ?? "";
-                var priv = txtPrivilege.Text.Trim();
+                var priv = (cboPrivilege.SelectedItem?.ToString() ?? "").Trim();
                 var withOption = chkWithGrantOption.Checked ? " with grant option" : "";
 
                 string sql;
@@ -189,7 +308,7 @@ namespace WindowsFormsApp1
                 }
                 else
                 {
-                    var obj = txtObject.Text.Trim();
+                    var obj = cboObject.Text.Trim();
                     var cols = txtColumns.Text.Trim();
 
                     if ((priv.Equals("select", StringComparison.OrdinalIgnoreCase) || priv.Equals("update", StringComparison.OrdinalIgnoreCase))
@@ -283,6 +402,16 @@ from dba_role_privs{where}";
                 await RefreshAuditAsync();
             }
             catch (Exception ex) { ShowOracleError(ex); }
+        }
+
+        private void chkWithGrantOption_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblObjectFilter_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

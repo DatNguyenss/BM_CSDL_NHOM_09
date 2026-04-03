@@ -45,16 +45,21 @@ namespace WindowsFormsApp1
             this.btnGrantRefreshTargets = new System.Windows.Forms.Button();
             this.btnGrantExecute = new System.Windows.Forms.Button();
             this.btnPickColumns = new System.Windows.Forms.Button();
+            this.btnLoadObjects = new System.Windows.Forms.Button();
+            this.txtObjectFilter = new System.Windows.Forms.TextBox();
+            this.lblObjectFilter = new System.Windows.Forms.Label();
             this.txtColumns = new System.Windows.Forms.TextBox();
             this.lblColumns = new System.Windows.Forms.Label();
-            this.txtObject = new System.Windows.Forms.TextBox();
+            this.cboObject = new System.Windows.Forms.ComboBox();
             this.lblObject = new System.Windows.Forms.Label();
             this.chkWithGrantOption = new System.Windows.Forms.CheckBox();
             this.radGrantObjPriv = new System.Windows.Forms.RadioButton();
             this.radGrantSysPriv = new System.Windows.Forms.RadioButton();
             this.radGrantRole = new System.Windows.Forms.RadioButton();
-            this.txtPrivilege = new System.Windows.Forms.TextBox();
+            this.cboPrivilege = new System.Windows.Forms.ComboBox();
             this.lblPrivilege = new System.Windows.Forms.Label();
+            this.cboObjectType = new System.Windows.Forms.ComboBox();
+            this.lblObjectType = new System.Windows.Forms.Label();
             this.cboGrantee = new System.Windows.Forms.ComboBox();
             this.lblGrantee = new System.Windows.Forms.Label();
             this.tabAudit = new System.Windows.Forms.TabPage();
@@ -328,30 +333,35 @@ namespace WindowsFormsApp1
             this.grpGrant.Controls.Add(this.btnGrantRefreshTargets);
             this.grpGrant.Controls.Add(this.btnGrantExecute);
             this.grpGrant.Controls.Add(this.btnPickColumns);
+            this.grpGrant.Controls.Add(this.btnLoadObjects);
+            this.grpGrant.Controls.Add(this.txtObjectFilter);
+            this.grpGrant.Controls.Add(this.lblObjectFilter);
             this.grpGrant.Controls.Add(this.txtColumns);
             this.grpGrant.Controls.Add(this.lblColumns);
-            this.grpGrant.Controls.Add(this.txtObject);
+            this.grpGrant.Controls.Add(this.cboObject);
             this.grpGrant.Controls.Add(this.lblObject);
             this.grpGrant.Controls.Add(this.chkWithGrantOption);
             this.grpGrant.Controls.Add(this.radGrantObjPriv);
             this.grpGrant.Controls.Add(this.radGrantSysPriv);
             this.grpGrant.Controls.Add(this.radGrantRole);
-            this.grpGrant.Controls.Add(this.txtPrivilege);
+            this.grpGrant.Controls.Add(this.cboPrivilege);
             this.grpGrant.Controls.Add(this.lblPrivilege);
+            this.grpGrant.Controls.Add(this.cboObjectType);
+            this.grpGrant.Controls.Add(this.lblObjectType);
             this.grpGrant.Controls.Add(this.cboGrantee);
             this.grpGrant.Controls.Add(this.lblGrantee);
             this.grpGrant.Location = new System.Drawing.Point(13, 13);
             this.grpGrant.Name = "grpGrant";
-            this.grpGrant.Size = new System.Drawing.Size(862, 200);
+            this.grpGrant.Size = new System.Drawing.Size(1166, 264);
             this.grpGrant.TabIndex = 0;
             this.grpGrant.TabStop = false;
             this.grpGrant.Text = "Quy trình cấp quyền";
             // 
             // btnGrantRefreshTargets
             // 
-            this.btnGrantRefreshTargets.Location = new System.Drawing.Point(522, 23);
+            this.btnGrantRefreshTargets.Location = new System.Drawing.Point(608, 23);
             this.btnGrantRefreshTargets.Name = "btnGrantRefreshTargets";
-            this.btnGrantRefreshTargets.Size = new System.Drawing.Size(120, 23);
+            this.btnGrantRefreshTargets.Size = new System.Drawing.Size(218, 23);
             this.btnGrantRefreshTargets.TabIndex = 2;
             this.btnGrantRefreshTargets.Text = "Tải danh sách người dùng / vai trò";
             this.btnGrantRefreshTargets.UseVisualStyleBackColor = true;
@@ -359,7 +369,7 @@ namespace WindowsFormsApp1
             // 
             // btnGrantExecute
             // 
-            this.btnGrantExecute.Location = new System.Drawing.Point(608, 165);
+            this.btnGrantExecute.Location = new System.Drawing.Point(709, 180);
             this.btnGrantExecute.Name = "btnGrantExecute";
             this.btnGrantExecute.Size = new System.Drawing.Size(230, 23);
             this.btnGrantExecute.TabIndex = 14;
@@ -369,7 +379,7 @@ namespace WindowsFormsApp1
             // 
             // btnPickColumns
             // 
-            this.btnPickColumns.Location = new System.Drawing.Point(608, 132);
+            this.btnPickColumns.Location = new System.Drawing.Point(709, 154);
             this.btnPickColumns.Name = "btnPickColumns";
             this.btnPickColumns.Size = new System.Drawing.Size(230, 23);
             this.btnPickColumns.TabIndex = 13;
@@ -377,98 +387,149 @@ namespace WindowsFormsApp1
             this.btnPickColumns.UseVisualStyleBackColor = true;
             this.btnPickColumns.Click += new System.EventHandler(this.btnPickColumns_Click);
             // 
+            // btnLoadObjects
+            // 
+            this.btnLoadObjects.Location = new System.Drawing.Point(709, 113);
+            this.btnLoadObjects.Name = "btnLoadObjects";
+            this.btnLoadObjects.Size = new System.Drawing.Size(190, 23);
+            this.btnLoadObjects.TabIndex = 10;
+            this.btnLoadObjects.Text = "Tải danh sách đối tượng";
+            this.btnLoadObjects.UseVisualStyleBackColor = true;
+            this.btnLoadObjects.Click += new System.EventHandler(this.btnLoadObjects_Click);
+            // 
+            // txtObjectFilter
+            // 
+            this.txtObjectFilter.Location = new System.Drawing.Point(334, 116);
+            this.txtObjectFilter.Name = "txtObjectFilter";
+            this.txtObjectFilter.Size = new System.Drawing.Size(357, 20);
+            this.txtObjectFilter.TabIndex = 9;
+            // 
+            // lblObjectFilter
+            // 
+            this.lblObjectFilter.AutoSize = true;
+            this.lblObjectFilter.Location = new System.Drawing.Point(250, 119);
+            this.lblObjectFilter.Name = "lblObjectFilter";
+            this.lblObjectFilter.Size = new System.Drawing.Size(78, 13);
+            this.lblObjectFilter.TabIndex = 8;
+            this.lblObjectFilter.Text = "Lọc (tùy chọn):";
+            this.lblObjectFilter.Click += new System.EventHandler(this.lblObjectFilter_Click);
+            // 
             // txtColumns
             // 
-            this.txtColumns.Location = new System.Drawing.Point(92, 134);
+            this.txtColumns.Location = new System.Drawing.Point(141, 180);
             this.txtColumns.Name = "txtColumns";
-            this.txtColumns.Size = new System.Drawing.Size(510, 20);
-            this.txtColumns.TabIndex = 12;
+            this.txtColumns.Size = new System.Drawing.Size(550, 20);
+            this.txtColumns.TabIndex = 13;
             // 
             // lblColumns
             // 
             this.lblColumns.AutoSize = true;
-            this.lblColumns.Location = new System.Drawing.Point(15, 137);
+            this.lblColumns.Location = new System.Drawing.Point(15, 183);
             this.lblColumns.Name = "lblColumns";
             this.lblColumns.Size = new System.Drawing.Size(68, 13);
-            this.lblColumns.TabIndex = 11;
+            this.lblColumns.TabIndex = 12;
             this.lblColumns.Text = "Cột (nếu có):";
             // 
-            // txtObject
+            // cboObject
             // 
-            this.txtObject.Location = new System.Drawing.Point(92, 108);
-            this.txtObject.Name = "txtObject";
-            this.txtObject.Size = new System.Drawing.Size(510, 20);
-            this.txtObject.TabIndex = 10;
-            this.txtObject.Text = "HR.EMPLOYEES";
+            this.cboObject.FormattingEnabled = true;
+            this.cboObject.Location = new System.Drawing.Point(141, 154);
+            this.cboObject.Name = "cboObject";
+            this.cboObject.Size = new System.Drawing.Size(550, 21);
+            this.cboObject.TabIndex = 12;
             // 
             // lblObject
             // 
             this.lblObject.AutoSize = true;
-            this.lblObject.Location = new System.Drawing.Point(15, 111);
+            this.lblObject.Location = new System.Drawing.Point(15, 157);
             this.lblObject.Name = "lblObject";
             this.lblObject.Size = new System.Drawing.Size(120, 13);
-            this.lblObject.TabIndex = 9;
+            this.lblObject.TabIndex = 11;
             this.lblObject.Text = "Đối tượng (schema.tên):";
             // 
             // chkWithGrantOption
             // 
             this.chkWithGrantOption.AutoSize = true;
-            this.chkWithGrantOption.Location = new System.Drawing.Point(608, 82);
+            this.chkWithGrantOption.Location = new System.Drawing.Point(709, 78);
             this.chkWithGrantOption.Name = "chkWithGrantOption";
             this.chkWithGrantOption.Size = new System.Drawing.Size(229, 17);
-            this.chkWithGrantOption.TabIndex = 8;
+            this.chkWithGrantOption.TabIndex = 7;
             this.chkWithGrantOption.Text = "Cho phép cấp lại (WITH GRANT OPTION)";
             this.chkWithGrantOption.UseVisualStyleBackColor = true;
+            this.chkWithGrantOption.CheckedChanged += new System.EventHandler(this.chkWithGrantOption_CheckedChanged);
             // 
             // radGrantObjPriv
             // 
             this.radGrantObjPriv.AutoSize = true;
-            this.radGrantObjPriv.Location = new System.Drawing.Point(482, 80);
+            this.radGrantObjPriv.Location = new System.Drawing.Point(540, 77);
             this.radGrantObjPriv.Name = "radGrantObjPriv";
             this.radGrantObjPriv.Size = new System.Drawing.Size(125, 17);
-            this.radGrantObjPriv.TabIndex = 7;
+            this.radGrantObjPriv.TabIndex = 6;
             this.radGrantObjPriv.Text = "Quyền trên đối tượng";
             this.radGrantObjPriv.UseVisualStyleBackColor = true;
+            this.radGrantObjPriv.CheckedChanged += new System.EventHandler(this.radGrant_CheckedChanged);
             // 
             // radGrantSysPriv
             // 
             this.radGrantSysPriv.AutoSize = true;
-            this.radGrantSysPriv.Location = new System.Drawing.Point(392, 80);
+            this.radGrantSysPriv.Location = new System.Drawing.Point(403, 78);
             this.radGrantSysPriv.Name = "radGrantSysPriv";
             this.radGrantSysPriv.Size = new System.Drawing.Size(101, 17);
-            this.radGrantSysPriv.TabIndex = 6;
+            this.radGrantSysPriv.TabIndex = 5;
             this.radGrantSysPriv.Text = "Quyền hệ thống";
             this.radGrantSysPriv.UseVisualStyleBackColor = true;
+            this.radGrantSysPriv.CheckedChanged += new System.EventHandler(this.radGrant_CheckedChanged);
             // 
             // radGrantRole
             // 
             this.radGrantRole.AutoSize = true;
             this.radGrantRole.Checked = true;
-            this.radGrantRole.Location = new System.Drawing.Point(324, 80);
+            this.radGrantRole.Location = new System.Drawing.Point(324, 78);
             this.radGrantRole.Name = "radGrantRole";
             this.radGrantRole.Size = new System.Drawing.Size(55, 17);
-            this.radGrantRole.TabIndex = 5;
+            this.radGrantRole.TabIndex = 4;
             this.radGrantRole.TabStop = true;
             this.radGrantRole.Text = "Vai trò";
             this.radGrantRole.UseVisualStyleBackColor = true;
+            this.radGrantRole.CheckedChanged += new System.EventHandler(this.radGrant_CheckedChanged);
             // 
-            // txtPrivilege
+            // cboPrivilege
             // 
-            this.txtPrivilege.Location = new System.Drawing.Point(92, 54);
-            this.txtPrivilege.Name = "txtPrivilege";
-            this.txtPrivilege.Size = new System.Drawing.Size(510, 20);
-            this.txtPrivilege.TabIndex = 4;
-            this.txtPrivilege.Text = "SELECT";
-            this.txtPrivilege.TextChanged += new System.EventHandler(this.txtPrivilege_TextChanged);
+            this.cboPrivilege.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboPrivilege.FormattingEnabled = true;
+            this.cboPrivilege.Location = new System.Drawing.Point(324, 52);
+            this.cboPrivilege.Name = "cboPrivilege";
+            this.cboPrivilege.Size = new System.Drawing.Size(278, 21);
+            this.cboPrivilege.TabIndex = 3;
+            this.cboPrivilege.SelectedIndexChanged += new System.EventHandler(this.cboPrivilege_SelectedIndexChanged);
             // 
             // lblPrivilege
             // 
             this.lblPrivilege.AutoSize = true;
-            this.lblPrivilege.Location = new System.Drawing.Point(15, 57);
+            this.lblPrivilege.Location = new System.Drawing.Point(277, 55);
             this.lblPrivilege.Name = "lblPrivilege";
             this.lblPrivilege.Size = new System.Drawing.Size(41, 13);
-            this.lblPrivilege.TabIndex = 3;
+            this.lblPrivilege.TabIndex = 2;
             this.lblPrivilege.Text = "Quyền:";
+            // 
+            // cboObjectType
+            // 
+            this.cboObjectType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboObjectType.FormattingEnabled = true;
+            this.cboObjectType.Location = new System.Drawing.Point(104, 52);
+            this.cboObjectType.Name = "cboObjectType";
+            this.cboObjectType.Size = new System.Drawing.Size(154, 21);
+            this.cboObjectType.TabIndex = 1;
+            this.cboObjectType.SelectedIndexChanged += new System.EventHandler(this.cboObjectType_SelectedIndexChanged);
+            // 
+            // lblObjectType
+            // 
+            this.lblObjectType.AutoSize = true;
+            this.lblObjectType.Location = new System.Drawing.Point(15, 56);
+            this.lblObjectType.Name = "lblObjectType";
+            this.lblObjectType.Size = new System.Drawing.Size(78, 13);
+            this.lblObjectType.TabIndex = 0;
+            this.lblObjectType.Text = "Loại đối tượng:";
             // 
             // cboGrantee
             // 
@@ -476,7 +537,7 @@ namespace WindowsFormsApp1
             this.cboGrantee.FormattingEnabled = true;
             this.cboGrantee.Location = new System.Drawing.Point(104, 25);
             this.cboGrantee.Name = "cboGrantee";
-            this.cboGrantee.Size = new System.Drawing.Size(384, 21);
+            this.cboGrantee.Size = new System.Drawing.Size(498, 21);
             this.cboGrantee.TabIndex = 1;
             // 
             // lblGrantee
@@ -638,14 +699,19 @@ namespace WindowsFormsApp1
         private System.Windows.Forms.GroupBox grpGrant;
         private System.Windows.Forms.ComboBox cboGrantee;
         private System.Windows.Forms.Label lblGrantee;
-        private System.Windows.Forms.TextBox txtPrivilege;
+        private System.Windows.Forms.ComboBox cboObjectType;
+        private System.Windows.Forms.Label lblObjectType;
+        private System.Windows.Forms.ComboBox cboPrivilege;
         private System.Windows.Forms.Label lblPrivilege;
         private System.Windows.Forms.RadioButton radGrantRole;
         private System.Windows.Forms.RadioButton radGrantSysPriv;
         private System.Windows.Forms.RadioButton radGrantObjPriv;
         private System.Windows.Forms.CheckBox chkWithGrantOption;
-        private System.Windows.Forms.TextBox txtObject;
+        private System.Windows.Forms.ComboBox cboObject;
         private System.Windows.Forms.Label lblObject;
+        private System.Windows.Forms.Label lblObjectFilter;
+        private System.Windows.Forms.TextBox txtObjectFilter;
+        private System.Windows.Forms.Button btnLoadObjects;
         private System.Windows.Forms.TextBox txtColumns;
         private System.Windows.Forms.Label lblColumns;
         private System.Windows.Forms.Button btnPickColumns;

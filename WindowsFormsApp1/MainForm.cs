@@ -298,16 +298,6 @@ namespace WindowsFormsApp1
             tab.Controls.Add(gridBox);
             tab.Controls.Add(hint);
             tab.Controls.Add(form);
-
-            // Tự tải danh sách user lần đầu vào tab
-            bool usersLoaded = false;
-            tab.Enter += async (s, e) =>
-            {
-                if (usersLoaded) return;
-                usersLoaded = true;
-                await RefreshUsersAsync();
-            };
-
             return tab;
         }
 
@@ -387,15 +377,6 @@ namespace WindowsFormsApp1
             tab.Controls.Add(gridBox);
             tab.Controls.Add(hint);
             tab.Controls.Add(form);
-
-            bool rolesLoaded = false;
-            tab.Enter += async (s, e) =>
-            {
-                if (rolesLoaded) return;
-                rolesLoaded = true;
-                await RefreshRolesAsync();
-            };
-
             return tab;
         }
 
@@ -458,14 +439,7 @@ namespace WindowsFormsApp1
             layout.Controls.Add(_grpGrantObjPriv, 0, 3);
 
             tab.Controls.Add(layout);
-            bool grantLoaded = false;
-            tab.Enter += async (s, e) =>
-            {
-                await EnsurePrivilegeListsLoadedAsync();
-                if (grantLoaded) return;
-                grantLoaded = true;
-                await LoadGranteesAsync();
-            };
+            tab.Enter += async (s, e) => await EnsurePrivilegeListsLoadedAsync();
             return tab;
         }
 
@@ -637,14 +611,7 @@ namespace WindowsFormsApp1
             layout.Controls.Add(_grpRevokeObjPriv, 0, 3);
 
             tab.Controls.Add(layout);
-            bool revokeLoaded = false;
-            tab.Enter += async (s, e) =>
-            {
-                await EnsurePrivilegeListsLoadedAsync();
-                if (revokeLoaded) return;
-                revokeLoaded = true;
-                await LoadGranteesAsync();
-            };
+            tab.Enter += async (s, e) => await EnsurePrivilegeListsLoadedAsync();
             return tab;
         }
 
@@ -725,15 +692,6 @@ namespace WindowsFormsApp1
             root.Controls.Add(top, 0, 0);
             root.Controls.Add(grids, 0, 1);
             tab.Controls.Add(root);
-
-            bool ownersLoaded = false;
-            tab.Enter += async (s, e) =>
-            {
-                if (ownersLoaded) return;
-                ownersLoaded = true;
-                await LoadOwnersAsync();
-            };
-
             return tab;
         }
 
